@@ -45,6 +45,26 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ──── Logo ──── */
+.logo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.logo-large {
+  max-width: 120px;
+  margin: 0 auto 16px;
+}
+
+.logo-header {
+  max-width: 40px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
 /* ──── Headings ──── */
 h1, h2, h3, h4, h5, h6 {
   color: var(--beige);
@@ -105,19 +125,21 @@ h3 {
   border-bottom: 1px solid var(--beige);
   border-top: 3px solid var(--beige);
   background: rgba(15, 15, 15, 0.98);
-}
-
-.header-content {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto;
 }
 
 .app-header h1 {
   font-size: 24px;
   margin: 0;
-  flex: 1;
-  text-align: center;
 }
 
 .btn-back {
