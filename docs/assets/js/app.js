@@ -189,6 +189,11 @@ function saveProgress() {
 }
 
 function markSessionComplete() {
+  // Only mark as complete if in program mode
+  if (!state.currentProgram) {
+    return;
+  }
+
   const trainingId = state.currentProgram.sessions[state.currentSessionIndex].id;
   if (!state.completedTrainings.includes(trainingId)) {
     state.completedTrainings.push(trainingId);
@@ -381,19 +386,43 @@ function stopSession() {
 }
 
 function runTimer() {
-  const blocks = state.currentProgram.sessions[state.currentSessionIndex].blocks;
+  // Get blocks from either program or WOD mode
+  const blocks = state.currentProgram
+    ? state.currentProgram.sessions[state.currentSessionIndex].blocks
+    : state.currentWod?.blocks;
+
+  if (!blocks) {
+    console.error('No blocks found for timer');
+    return;
+  }
 
   // Find first non-warmup block or use static warmup
   const blockToShow = blocks.active_warmup || blocks.strength || blocks.metcon || blocks.static_warmup || blocks.cooldown;
   const blockName = blocks.active_warmup ? 'Active Warmup' : blocks.strength ? 'Strength' : blocks.metcon ? 'Metcon' : blocks.static_warmup ? 'Static Warmup' : 'Cooldown';
   const duration = blockToShow.duration_minutes || 5;
 
+  // Determine round info
+  let roundInfo = `${duration} minutes`;
+
+  // For warmups and cooldowns, show as "X rounds" if duration allows
+  if ((blockName === 'Active Warmup' || blockName === 'Static Warmup' || blockName === 'Cooldown') && blockToShow.movements && blockToShow.movements.length > 0) {
+    // Simple round calculation: assume ~1min per movement
+    const numRounds = Math.max(1, Math.floor(duration / Math.max(1, blockToShow.movements.length * 0.5)));
+    if (numRounds > 1) {
+      roundInfo = `${numRounds} rounds x ${Math.ceil(duration / numRounds)} min`;
+    } else {
+      roundInfo = `1 round x ${duration} min`;
+    }
+  } else if (blockName === 'Metcon' && blockToShow.rounds_or_duration) {
+    roundInfo = blockToShow.rounds_or_duration;
+  }
+
   document.getElementById('timer-block-name').textContent = blockName;
-  document.getElementById('timer-round-info').textContent = `${duration} minutes`;
+  document.getElementById('timer-round-info').textContent = roundInfo;
 
   if (blockToShow.movements) {
     document.getElementById('timer-movements').innerHTML = blockToShow.movements
-      .map(m => `<p>${m.name}${m.reps_or_duration ? ` — ${m.reps_or_duration}` : ''}</p>`)
+      .map(m => `<p>${m.name}${m.reps_or_duration ? ` — ${m.reps_or_duration}` : m.reps ? ` — ${m.reps} reps x ${m.sets || 1} sets` : ''}</p>`)
       .join('');
   }
 
@@ -431,11 +460,16 @@ function playTimer() {
     updateTimerDisplay();
 
     // Update progress bar - calculate total from all blocks
-    const blocks = state.currentProgram.sessions[state.currentSessionIndex].blocks;
-    const blockToShow = blocks.active_warmup || blocks.strength || blocks.metcon || blocks.static_warmup || blocks.cooldown;
-    const total = (blockToShow.duration_minutes || 5) * 60;
-    const pct = ((total - state.timerSeconds) / total) * 100;
-    document.getElementById('timer-progress-bar').style.width = `${Math.min(pct, 100)}%`;
+    const blocks = state.currentProgram
+      ? state.currentProgram.sessions[state.currentSessionIndex].blocks
+      : state.currentWod?.blocks;
+
+    if (blocks) {
+      const blockToShow = blocks.active_warmup || blocks.strength || blocks.metcon || blocks.static_warmup || blocks.cooldown;
+      const total = (blockToShow.duration_minutes || 5) * 60;
+      const pct = ((total - state.timerSeconds) / total) * 100;
+      document.getElementById('timer-progress-bar').style.width = `${Math.min(pct, 100)}%`;
+    }
 
     // Beep at 10 seconds
     if (state.timerSeconds === 10) {
@@ -454,11 +488,16 @@ function pauseTimer() {
 
 function resetTimer() {
   pauseTimer();
-  const blocks = state.currentProgram.sessions[state.currentSessionIndex].blocks;
-  const blockToShow = blocks.active_warmup || blocks.strength || blocks.metcon || blocks.static_warmup || blocks.cooldown;
-  state.timerSeconds = (blockToShow.duration_minutes || 5) * 60;
-  updateTimerDisplay();
-  document.getElementById('timer-progress-bar').style.width = '0%';
+  const blocks = state.currentProgram
+    ? state.currentProgram.sessions[state.currentSessionIndex].blocks
+    : state.currentWod?.blocks;
+
+  if (blocks) {
+    const blockToShow = blocks.active_warmup || blocks.strength || blocks.metcon || blocks.static_warmup || blocks.cooldown;
+    state.timerSeconds = (blockToShow.duration_minutes || 5) * 60;
+    updateTimerDisplay();
+    document.getElementById('timer-progress-bar').style.width = '0%';
+  }
 }
 
 function playBeep() {
