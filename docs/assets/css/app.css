@@ -1,6 +1,6 @@
 /* ============================================
-   WODie - Sport-Technical CrossFit PWA
-   Modern vibrant design with depth and life
+   WODie - Industrial Minimalist CrossFit PWA
+   Beige tones, sharp edges, technical aesthetic
    ============================================ */
 
 * {
@@ -10,7 +10,7 @@
 }
 
 :root {
-  /* Palette */
+  /* Palette - Industrial Minimalist */
   --black-darkest: #0a0a0a;
   --black-base: #0f0f0f;
   --black-light: #1a1a1a;
@@ -20,14 +20,14 @@
   --gray-light: #cccccc;
   --white: #ffffff;
 
-  /* Accents */
-  --cyan: #00d9ff;
-  --cyan-dark: #00a3cc;
-  --cyan-light: #33e6ff;
-  --red: #e63946;
-  --red-dark: #cc2d38;
-  --amber: #ffc409;
-  --amber-dark: #e6b000;
+  /* Accents - Beige & Muted Tones */
+  --beige: #c9b89d;
+  --beige-dark: #a68872;
+  --beige-light: #d4c4b0;
+  --burgundy: #8b4a4a;
+  --burgundy-dark: #6b3a3a;
+  --gold: #a89659;
+  --gold-dark: #8b7a47;
 
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Courier New', monospace;
@@ -41,14 +41,13 @@ html, body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--white);
-  background: linear-gradient(135deg, var(--black-base) 0%, #1a0a2e 100%);
-  background-attachment: fixed;
+  background: var(--black-base);
   -webkit-font-smoothing: antialiased;
 }
 
 /* ──── Headings ──── */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--cyan);
+  color: var(--beige);
   font-weight: 700;
 }
 
@@ -82,8 +81,7 @@ h3 {
   height: 100vh;
   font-size: 14px;
   color: var(--gray);
-  background: linear-gradient(135deg, var(--black-base) 0%, #1a0a2e 100%);
-  background-attachment: fixed;
+  background: var(--black-base);
   flex-direction: column;
   gap: 16px;
 }
@@ -92,7 +90,7 @@ h3 {
   width: 40px;
   height: 40px;
   border: 3px solid var(--gray-card);
-  border-top-color: var(--cyan);
+  border-top-color: var(--beige);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -104,10 +102,9 @@ h3 {
 /* ──── Header ──── */
 .app-header {
   padding: 16px;
-  border-bottom: 1px solid var(--cyan);
-  background: rgba(15, 15, 15, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 16px rgba(0, 217, 255, 0.1);
+  border-bottom: 1px solid var(--beige);
+  border-top: 3px solid var(--beige);
+  background: rgba(15, 15, 15, 0.98);
 }
 
 .header-content {
@@ -119,29 +116,28 @@ h3 {
 .app-header h1 {
   font-size: 24px;
   margin: 0;
-  text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
   flex: 1;
   text-align: center;
 }
 
 .btn-back {
   padding: 8px 16px;
-  background: rgba(0, 217, 255, 0.1);
-  border: 1px solid var(--cyan);
-  color: var(--cyan);
+  background: transparent;
+  border: 1px solid var(--beige);
+  color: var(--beige);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-radius: 4px;
+  border-radius: 0;
   white-space: nowrap;
 }
 
 .btn-back:hover {
-  background: rgba(0, 217, 255, 0.2);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.3);
+  background: var(--beige);
+  color: var(--black-base);
 }
 
 .btn-back.hidden {
@@ -165,7 +161,6 @@ h3 {
 .onboarding h1 {
   margin-bottom: 8px;
   font-size: 48px;
-  text-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
 }
 
 .onboarding > p {
@@ -183,20 +178,19 @@ h3 {
 
 .option-card {
   padding: 40px 24px;
-  background: rgba(38, 38, 38, 0.4);
-  border: 2px solid var(--gray-card);
+  background: rgba(38, 38, 38, 0.6);
+  border: 2px solid var(--beige);
   cursor: pointer;
   text-align: left;
   transition: all 0.25s;
   color: inherit;
   font-family: inherit;
-  backdrop-filter: blur(10px);
+  border-radius: 0;
 }
 
 .option-card:hover {
-  border-color: var(--cyan);
-  background: rgba(38, 38, 38, 0.7);
-  box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+  border-color: var(--beige);
+  background: rgba(38, 38, 38, 0.9);
   transform: translateY(-2px);
 }
 
@@ -230,18 +224,16 @@ h3 {
 
 .program-card {
   padding: 24px;
-  background: rgba(26, 26, 26, 0.5);
-  border: 1px solid rgba(0, 217, 255, 0.2);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
+  background: rgba(26, 26, 26, 0.7);
+  border: 1px solid var(--beige);
   cursor: pointer;
   transition: all 0.25s;
+  border-radius: 0;
 }
 
 .program-card:hover {
-  border-color: var(--cyan);
-  background: rgba(26, 26, 26, 0.7);
-  box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+  border-color: var(--beige);
+  background: rgba(26, 26, 26, 0.95);
   transform: translateY(-2px);
 }
 
@@ -260,10 +252,9 @@ h3 {
   max-width: 600px;
   margin: 0 auto 32px;
   padding: 24px;
-  background: rgba(26, 26, 26, 0.5);
-  border: 1px solid rgba(0, 217, 255, 0.2);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
+  background: rgba(26, 26, 26, 0.7);
+  border: 1px solid var(--beige);
+  border-radius: 0;
 }
 
 .trainings-header h2 {
@@ -280,10 +271,10 @@ h3 {
 
 .training-item {
   padding: 16px 20px;
-  background: rgba(38, 38, 38, 0.4);
-  border: 1px solid rgba(0, 217, 255, 0.15);
-  border-left: 4px solid var(--cyan);
-  border-radius: 6px;
+  background: rgba(38, 38, 38, 0.6);
+  border: 1px solid var(--beige);
+  border-left: 3px solid var(--beige);
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -292,9 +283,8 @@ h3 {
 }
 
 .training-item:hover {
-  background: rgba(38, 38, 38, 0.7);
-  border-color: var(--cyan);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.2);
+  background: rgba(38, 38, 38, 0.9);
+  border-color: var(--beige);
   transform: translateX(4px);
 }
 
@@ -305,7 +295,7 @@ h3 {
 
 .training-item.completed::after {
   content: "✓";
-  color: var(--cyan);
+  color: var(--beige);
   font-weight: 700;
   font-size: 16px;
 }
@@ -330,10 +320,10 @@ h3 {
   max-width: 600px;
   margin: 0 auto 32px;
   padding: 24px;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.2);
-  background: rgba(26, 26, 26, 0.5);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--beige);
+  border-top: 1px solid var(--beige);
+  background: rgba(26, 26, 26, 0.7);
+  border-radius: 0;
 }
 
 .progress-info {
@@ -346,7 +336,7 @@ h3 {
 
 .separator {
   margin: 0 8px;
-  color: var(--cyan);
+  color: var(--beige);
 }
 
 /* Program Navigation */
@@ -360,9 +350,9 @@ h3 {
   flex: 1;
   min-width: 100px;
   padding: 12px 16px;
-  background: rgba(0, 217, 255, 0.1);
-  border: 1px solid var(--cyan);
-  color: var(--cyan);
+  background: transparent;
+  border: 1px solid var(--beige);
+  color: var(--beige);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -372,17 +362,17 @@ h3 {
 }
 
 .btn-nav:hover {
-  background: rgba(0, 217, 255, 0.2);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.3);
+  background: var(--beige);
+  color: var(--black-base);
 }
 
 .btn-nav-wod {
   flex: 1;
   min-width: 100px;
   padding: 12px 16px;
-  background: rgba(255, 196, 9, 0.1);
-  border: 1px solid var(--amber);
-  color: var(--amber);
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -392,26 +382,25 @@ h3 {
 }
 
 .btn-nav-wod:hover {
-  background: rgba(255, 196, 9, 0.2);
-  box-shadow: 0 0 12px rgba(255, 196, 9, 0.3);
+  background: var(--gold);
+  color: var(--black-base);
 }
 
 /* ──── Session Card ──── */
 .session-card {
   max-width: 600px;
   margin: 0 auto;
-  background: rgba(26, 26, 26, 0.5);
+  background: rgba(26, 26, 26, 0.7);
   padding: 32px 24px;
-  border: 1px solid rgba(0, 217, 255, 0.1);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--beige);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .session-header {
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+  border-bottom: 1px solid var(--beige);
 }
 
 .session-header h2 {
@@ -438,7 +427,7 @@ h3 {
   padding: 14px 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+  border-bottom: 1px solid var(--beige);
   color: var(--white);
   font-size: 14px;
   font-weight: 600;
@@ -450,11 +439,11 @@ h3 {
 }
 
 .section-toggle:hover {
-  color: var(--cyan);
+  color: var(--beige);
 }
 
 .toggle-icon {
-  color: var(--cyan);
+  color: var(--beige);
   transition: transform 0.2s;
 }
 
@@ -479,7 +468,7 @@ h3 {
 
 .equipment-list li::before {
   content: "▪ ";
-  color: var(--cyan);
+  color: var(--beige);
   margin-right: 8px;
   font-weight: 700;
 }
@@ -492,7 +481,7 @@ h3 {
 .workout-block {
   margin-bottom: 32px;
   padding: 20px 0 24px 16px;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+  border-bottom: 1px solid var(--beige);
   border-left: 4px solid var(--gray-card);
 }
 
@@ -505,19 +494,19 @@ h3 {
 }
 
 .workout-block.active-warmup {
-  border-left-color: var(--cyan);
+  border-left-color: var(--beige);
 }
 
 .workout-block.strength {
-  border-left-color: var(--amber);
+  border-left-color: var(--gold);
 }
 
 .workout-block.metcon {
-  border-left-color: var(--red);
+  border-left-color: var(--burgundy);
 }
 
 .workout-block.cooldown {
-  border-left-color: var(--cyan);
+  border-left-color: var(--beige);
 }
 
 .block-title {
@@ -554,10 +543,11 @@ h3 {
 .metcon-format {
   padding: 14px;
   margin-bottom: 12px;
-  background: rgba(230, 57, 70, 0.1);
-  border-left: 3px solid var(--red);
+  background: rgba(139, 74, 74, 0.15);
+  border-left: 3px solid var(--burgundy);
   font-size: 14px;
   color: var(--gray-light);
+  border-radius: 0;
 }
 
 .rationale-item {
@@ -570,7 +560,7 @@ h3 {
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--amber);
+  color: var(--gold);
 }
 
 .rationale-item p {
@@ -607,13 +597,13 @@ h3 {
 
 .btn-primary {
   flex: 1;
-  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  background: var(--burgundy);
   color: var(--white);
-  box-shadow: 0 4px 16px rgba(230, 57, 70, 0.3);
+  border-radius: 0;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 24px rgba(230, 57, 70, 0.5);
+  background: var(--burgundy-dark);
   transform: translateY(-2px);
 }
 
@@ -622,15 +612,15 @@ h3 {
 }
 
 .btn-secondary {
-  background: rgba(0, 217, 255, 0.1);
-  color: var(--cyan);
-  border: 1px solid var(--cyan);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.2);
+  background: transparent;
+  color: var(--beige);
+  border: 1px solid var(--beige);
+  border-radius: 0;
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 217, 255, 0.2);
-  box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  background: var(--beige);
+  color: var(--black-base);
 }
 
 .btn-large {
@@ -645,8 +635,7 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--black-base) 0%, #1a0a2e 100%);
-  background-attachment: fixed;
+  background: var(--black-base);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -682,11 +671,11 @@ h3 {
 .timer-clock {
   text-align: center;
   margin: 60px 0;
-  background: linear-gradient(180deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.95));
+  background: var(--black-light);
   padding: 48px 32px;
-  border: 2px solid var(--cyan);
-  border-radius: 12px;
-  box-shadow: 0 0 40px rgba(0, 217, 255, 0.3), inset 0 0 20px rgba(0, 217, 255, 0.1);
+  border: 2px solid var(--beige);
+  border-radius: 2px;
+  box-shadow: 0 0 20px rgba(201, 184, 157, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
   position: relative;
 }
 
@@ -694,32 +683,23 @@ h3 {
   font-family: var(--font-display);
   font-size: 128px;
   font-weight: 900;
-  color: var(--cyan);
+  color: var(--beige);
   letter-spacing: 12px;
   position: relative;
   z-index: 1;
-  text-shadow:
-    0 0 20px rgba(0, 217, 255, 0.6),
-    0 0 40px rgba(0, 217, 255, 0.3),
-    0 0 60px rgba(0, 217, 255, 0.2);
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  text-shadow: 0 0 10px rgba(201, 184, 157, 0.5);
 }
 
 #timer-display.warning {
-  color: var(--amber);
-  text-shadow:
-    0 0 20px rgba(255, 196, 9, 0.6),
-    0 0 40px rgba(255, 196, 9, 0.3),
-    0 0 60px rgba(255, 196, 9, 0.2);
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(168, 150, 89, 0.6);
 }
 
 #timer-display.critical {
-  color: var(--red);
-  text-shadow:
-    0 0 20px rgba(230, 57, 70, 0.6),
-    0 0 40px rgba(230, 57, 70, 0.3),
-    0 0 60px rgba(230, 57, 70, 0.2);
+  color: var(--burgundy);
+  text-shadow: 0 0 15px rgba(139, 74, 74, 0.8);
   animation: pulse 0.5s infinite;
 }
 
@@ -734,25 +714,23 @@ h3 {
   height: 4px;
   background: rgba(38, 38, 38, 0.8);
   margin: 40px 0;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
 }
 
 .timer-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--cyan), var(--cyan-light));
+  background: var(--beige);
   transition: width 0.1s linear;
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.6);
 }
 
 /* ──── Timer Content ──── */
 .timer-movements {
   padding: 24px;
   margin: 32px 0;
-  background: rgba(38, 38, 38, 0.4);
-  border-left: 3px solid var(--cyan);
-  border-radius: 6px;
-  backdrop-filter: blur(10px);
+  background: rgba(38, 38, 38, 0.6);
+  border-left: 3px solid var(--beige);
+  border-radius: 0;
 }
 
 .timer-movements p {
@@ -782,29 +760,28 @@ h3 {
 
 .btn-timer {
   padding: 14px 28px;
-  background: rgba(0, 217, 255, 0.1);
-  border: 2px solid var(--cyan);
-  color: var(--cyan);
+  background: transparent;
+  border: 2px solid var(--beige);
+  color: var(--beige);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  border-radius: 4px;
+  border-radius: 0;
   min-width: 100px;
   font-family: inherit;
 }
 
 .btn-timer:hover {
-  background: rgba(0, 217, 255, 0.2);
-  box-shadow: 0 0 16px rgba(0, 217, 255, 0.4);
+  background: var(--beige);
+  color: var(--black-base);
   transform: translateY(-2px);
 }
 
 .btn-timer:active {
   transform: translateY(0);
-  background: rgba(0, 217, 255, 0.3);
 }
 
 .timer-actions {
@@ -836,7 +813,7 @@ h3 {
 
 .filter-btn {
   padding: 10px 16px;
-  background: rgba(38, 38, 38, 0.5);
+  background: rgba(38, 38, 38, 0.6);
   border: 1px solid var(--gray-card);
   color: var(--gray-light);
   font-size: 12px;
@@ -846,18 +823,18 @@ h3 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border-radius: 0;
 }
 
 .filter-btn:hover {
-  border-color: var(--cyan);
-  background: rgba(0, 217, 255, 0.1);
+  border-color: var(--beige);
+  background: rgba(201, 184, 157, 0.1);
 }
 
 .filter-btn.active {
-  background: var(--cyan);
+  background: var(--beige);
   color: var(--black-base);
-  border-color: var(--cyan);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.4);
+  border-color: var(--beige);
 }
 
 #wod-display {
@@ -912,9 +889,9 @@ h3 {
   }
 }
 
-/* ──── Smooth Interactions ──── */
+/* ──── Interactions ──── */
 button {
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 button:disabled {
