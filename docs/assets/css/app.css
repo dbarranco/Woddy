@@ -121,6 +121,7 @@ h3 {
 
 /* ──── Header ──── */
 .app-header {
+  width: 100%;
   padding: 16px;
   border-bottom: 1px solid var(--beige);
   border-top: 3px solid var(--beige);
@@ -128,6 +129,8 @@ h3 {
   display: flex;
   align-items: center;
   gap: 12px;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .header-center {
@@ -135,11 +138,14 @@ h3 {
   align-items: center;
   gap: 12px;
   margin: 0 auto;
+  flex-grow: 1;
+  justify-content: center;
 }
 
 .app-header h1 {
   font-size: 24px;
   margin: 0;
+  white-space: nowrap;
 }
 
 .btn-back {
