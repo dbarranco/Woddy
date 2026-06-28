@@ -245,13 +245,16 @@ def call_claude(prompt: str, retries: int = 2, model: str = None) -> dict:
 
 
 def call_claude_api(prompt: str, retries: int = 2, model: str = None) -> dict:
-    """Call Anthropic API and parse JSON response."""
+    """Call Anthropic API and parse JSON response. Uses streaming for large requests."""
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
     model_id = model or "claude-sonnet-4-5-20250929"  # Default to Sonnet 4.5
 
     for attempt in range(1, retries + 1):
         print(f"→ Calling Claude API ({model_id})... (attempt {attempt}/{retries})")
-        response = client.messages.create(
+
+        # Use streaming for all requests (safer for potentially long operations)
+        raw = ""
+        with client.messages.stream(
             model=model_id,
             max_tokens=20000,
             system=[
@@ -266,9 +269,12 @@ def call_claude_api(prompt: str, retries: int = 2, model: str = None) -> dict:
                 }
             ],
             messages=[{"role": "user", "content": prompt}]
-        )
+        ) as stream:
+            for text in stream.text_stream:
+                raw += text
 
-        raw = response.content[0].text.strip()
+        response = stream.get_final_message()
+        raw = raw.strip()
 
         # Log cache performance
         usage = response.usage
