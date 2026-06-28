@@ -127,9 +127,11 @@ function setupProgramFlow() {
     { id: 'back-in-shape', name: 'Back in Shape', description: 'Progressive return to training program. Choose your duration and weekly frequency.', weeks: null }
   ];
 
-  // Setup back buttons
-  document.getElementById('btn-back-to-programs').addEventListener('click', showProgramsSelection);
-  document.getElementById('btn-back-to-trainings').addEventListener('click', showTrainingsList);
+  // Setup back buttons (only if they exist in DOM)
+  const btnBackToTrainings = document.getElementById('btn-back-to-trainings');
+  if (btnBackToTrainings) {
+    btnBackToTrainings.addEventListener('click', showTrainingsList);
+  }
 }
 
 function showProgramsSelection() {
@@ -549,8 +551,34 @@ function renderRationale(rationale, containerId = null) {
 
 //=== Navigation ===
 function setupNavigation() {
-  // Back button navigation is handled by specific view setup functions
-  // No global navigation setup needed
+  // Setup logo click to go home
+  const headerLogo = document.querySelector('.app-header .logo-header');
+  if (headerLogo) {
+    headerLogo.addEventListener('click', goHome);
+  }
+}
+
+function goHome() {
+  // Stop timer if running
+  if (state.timerActive || state.timerRunning) {
+    stopSession();
+  }
+
+  // Hide all views
+  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('timer-overlay').classList.add('hidden');
+
+  // Reset state (but preserve localStorage)
+  state.currentProgram = null;
+  state.currentProgramId = null;
+  state.currentWod = null;
+  state.currentCategory = null;
+
+  // Show onboarding and hide header
+  document.getElementById('view-onboarding').classList.remove('hidden');
+  document.getElementById('app-header').classList.add('hidden');
+
+  console.log('🏠 Returned to home');
 }
 
 function showView(view) {
