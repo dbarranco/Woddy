@@ -884,13 +884,32 @@ function displayBlock(index) {
         }
       }
     }
-  } else if (key === 'metcon' && block.rounds_or_duration) {
-    roundInfo = block.rounds_or_duration;
-    // For metcon, try to extract number of rounds if format is "X rounds"
-    const roundMatch = block.rounds_or_duration.match(/(\d+)\s*rounds?/i);
-    if (roundMatch) {
-      numRounds = parseInt(roundMatch[1]);
-      perRound = Math.ceil(baseDuration / numRounds);
+  } else if (key === 'metcon') {
+    // Metcon blocks: use rounds_or_duration if available, or format + time cap
+    if (block.rounds_or_duration) {
+      roundInfo = block.rounds_or_duration;
+
+      // For metcon, try to extract number of rounds if format is "X rounds"
+      const roundMatch = block.rounds_or_duration.match(/(\d+)\s*rounds?/i);
+      if (roundMatch) {
+        numRounds = parseInt(roundMatch[1]);
+        perRound = Math.ceil(baseDuration / numRounds);
+      }
+      // For AMRAP or time-based workouts, use the time_cap or duration as-is
+      else if (block.time_cap_minutes) {
+        totalDuration = Math.min(baseDuration, block.time_cap_minutes);
+      }
+    } else if (block.format && block.time_cap_minutes) {
+      // Use format and time cap if rounds_or_duration not available
+      roundInfo = `${block.format} | ${block.time_cap_minutes} min`;
+      totalDuration = block.time_cap_minutes;
+    } else {
+      roundInfo = block.format || `${baseDuration} minutes`;
+    }
+
+    // Add target score if available
+    if (block.target_score) {
+      roundInfo = `${roundInfo} • Target: ${block.target_score}`;
     }
   }
 
@@ -903,7 +922,8 @@ function displayBlock(index) {
   // Update display with round info
   if (numRounds > 1) {
     roundInfo = `Round 1/${numRounds} • ${perRound}:00`;
-  } else {
+  } else if (key !== 'metcon') {
+    // Only override roundInfo for non-metcon blocks
     roundInfo = `${baseDuration} minutes`;
   }
 
