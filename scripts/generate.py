@@ -16,6 +16,7 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
+import anthropic
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).parent.parent
@@ -233,16 +234,79 @@ Return this JSON structure, nothing else:
 # ── API call ───────────────────────────────────────────────────────────────────
 
 def call_claude(prompt: str, retries: int = 2) -> dict:
-    """Call Claude via CLI and parse JSON response. Retries on JSON parse failure."""
+    """Call Claude API (if key available) or CLI. Retries on JSON parse failure."""
+
+    # Try to use API if ANTHROPIC_API_KEY is available
+    if "ANTHROPIC_API_KEY" in os.environ:
+        return call_claude_api(prompt, retries)
+    else:
+        print("⚠️  ANTHROPIC_API_KEY not set. Using claude CLI (if available).")
+        return call_claude_cli(prompt, retries)
+
+
+def call_claude_api(prompt: str, retries: int = 2) -> dict:
+    """Call Anthropic API and parse JSON response."""
+    client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
     for attempt in range(1, retries + 1):
-        print(f"→ Calling Claude via CLI... (attempt {attempt}/{retries})")
+        print(f"→ Calling Claude API... (attempt {attempt}/{retries})")
+        response = client.messages.create(
+            model="claude-sonnet-4-5-20250929",  # Sonnet 4.5
+            max_tokens=20000,
+            system=[
+                {
+                    "type": "text",
+                    "text": SYSTEM_PROMPT,
+                },
+                {
+                    "type": "text",
+                    "text": "KNOWLEDGE BASE AND HARD RULES BELOW — CACHED FOR EFFICIENCY",
+                    "cache_control": {"type": "ephemeral"}
+                }
+            ],
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        raw = response.content[0].text.strip()
+
+        # Log cache performance
+        usage = response.usage
+        print(f"   Input tokens: {usage.input_tokens} | Cache write: {getattr(usage, 'cache_creation_input_tokens', 0)} | Cache read: {getattr(usage, 'cache_read_input_tokens', 0)}")
+
+        # Strip markdown fences if present
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1]
+            raw = raw.rsplit("```", 1)[0]
+
+        try:
+            result = json.loads(raw)
+            print(f"   ✅ JSON parsed successfully")
+            return result
+        except json.JSONDecodeError as e:
+            if attempt < retries:
+                print(f"   ❌ JSON parse error (attempt {attempt}): {e}")
+                print(f"   Retrying...")
+                continue
+            else:
+                print(f"ERROR: Failed to parse JSON after {retries} attempts: {e}")
+                print("Raw response saved to output/debug-last-response.txt")
+                (OUTPUT_DIR / "debug-last-response.txt").write_text(raw)
+                raise
+
+
+def call_claude_cli(prompt: str, retries: int = 2) -> dict:
+    """Call Claude CLI and parse JSON response. Only used if API key unavailable."""
+
+    for attempt in range(1, retries + 1):
+        print(f"→ Calling Claude CLI... (attempt {attempt}/{retries})")
 
         # Build the full prompt with system instructions
         full_prompt = f"""{SYSTEM_PROMPT}
 
 KNOWLEDGE BASE AND HARD RULES BELOW:
-{prompt}"""
+{prompt}
+
+Important: Return ONLY the JSON, no additional text or summary."""
 
         try:
             # Call claude CLI
