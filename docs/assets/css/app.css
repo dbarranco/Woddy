@@ -1029,6 +1029,13 @@ h3 {
   transform: rotate(180deg);
 }
 
+.scaling-inline {
+  margin-top: 4px;
+  color: var(--gray);
+  font-size: 12px;
+  font-style: italic;
+}
+
 .scaling-tips {
   margin-top: 8px;
   padding: 12px;

@@ -921,14 +921,24 @@ function displayBlock(index) {
         }
 
         if (m.scaling) {
-          const scalingId = `scaling-${state.currentBlockIndex}-${idx}`;
-          html += `<button class="scaling-toggle" data-scaling-id="${scalingId}">
-            <span>⚙️ Scaling Tips</span>
-            <span class="toggle-icon">▼</span>
-          </button>
-          <div id="${scalingId}" class="scaling-tips hidden">
-            ${expandAcronyms(m.scaling)}
-          </div>`;
+          const scalingText = expandAcronyms(m.scaling);
+          // Show scaling inline if it's short and single-line, otherwise use toggle
+          const isSimpleScaling = scalingText.length < 80 && !scalingText.includes('\n');
+
+          if (isSimpleScaling) {
+            // Inline scaling for simple cases
+            html += `<div class="scaling-inline"><small>${scalingText}</small></div>`;
+          } else {
+            // Toggle for complex scaling
+            const scalingId = `scaling-${state.currentBlockIndex}-${idx}`;
+            html += `<button class="scaling-toggle" data-scaling-id="${scalingId}">
+              <span>⚙️ Scaling Tips</span>
+              <span class="toggle-icon">▼</span>
+            </button>
+            <div id="${scalingId}" class="scaling-tips hidden">
+              ${scalingText}
+            </div>`;
+          }
         }
 
         html += `</div>`;
