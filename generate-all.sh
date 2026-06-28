@@ -7,7 +7,8 @@ set -e  # Exit on error
 
 # Load environment
 source venv/bin/activate
-# ANTHROPIC_API_KEY removed (use .env or environment variable)
+# ANTHROPIC_API_KEY should be set in your environment (.env or shell config)
+# Do not commit secrets to git!
 
 echo "🏋️  Woddy Generation Pipeline"
 echo "=============================="
