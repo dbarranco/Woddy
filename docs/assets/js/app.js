@@ -71,12 +71,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('🚀 App initializing...');
 
   try {
+    console.log('  Loading progress...');
     loadProgress();
+
+    console.log('  Setting up onboarding...');
     setupOnboarding();
+
+    console.log('  Setting up navigation...');
     setupNavigation();
+
+    console.log('  Setting up program flow...');
     setupProgramFlow();
+
+    console.log('  Setting up collapsibles...');
     setupCollapsibles();
+
+    console.log('  Setting up session start...');
     setupSessionStart();
+
+    console.log('  Setting up WOD mode...');
     setupWodMode();
 
     console.log('✅ All setup complete');
