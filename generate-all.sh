@@ -7,7 +7,7 @@ set -e  # Exit on error
 
 # Load environment
 source venv/bin/activate
-export ANTHROPIC_API_KEY="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"
+# ANTHROPIC_API_KEY removed (use .env or environment variable)
 
 echo "🏋️  Woddy Generation Pipeline"
 echo "=============================="
