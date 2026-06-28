@@ -1,4 +1,4 @@
-// WODie - Sport-Technical CrossFit PWA
+// Woddy - Sport-Technical CrossFit PWA
 
 //=== State ===
 const state = {
@@ -178,14 +178,14 @@ function loadSession(index) {
 
 //=== Progress Tracking ===
 function loadProgress() {
-  const saved = localStorage.getItem('wodie_progress');
+  const saved = localStorage.getItem('woddy_progress');
   if (saved) {
     state.completedTrainings = JSON.parse(saved);
   }
 }
 
 function saveProgress() {
-  localStorage.setItem('wodie_progress', JSON.stringify(state.completedTrainings));
+  localStorage.setItem('woddy_progress', JSON.stringify(state.completedTrainings));
 }
 
 function markSessionComplete() {

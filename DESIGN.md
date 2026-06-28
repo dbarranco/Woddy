@@ -1,4 +1,4 @@
-# WODie — Design Document
+# Woddy — Design Document
 **Version 1.0 | Status: Draft**
 
 ---

@@ -1,4 +1,4 @@
-# WODie 🏋️
+# Woddy 🏋️
 
 AI-powered CrossFit programming app. Static PWA hosted on GitHub Pages. All content is pre-generated offline via Claude API and committed as static JSON. Zero runtime API calls.
 
@@ -17,10 +17,10 @@ Every workout includes full session structure, equipment list, and scientific ra
 ## Repository Structure
 
 ```
-wodie/
+woddy/
 ├── CLAUDE.md                   ← you are here
 ├── DESIGN.md                   ← full product design document
-├── setup-wodie.sh              ← one-shot project setup script
+├── setup-woddy.sh              ← one-shot project setup script
 │
 ├── knowledge-base/             ← curated sports science documents (source of truth)
 │   ├── 01-energy-systems.md
@@ -80,7 +80,7 @@ generate.py                  →    docs/data/*.json
 ## Running the Generator
 
 ```bash
-cd woodie/scripts
+cd woddy/scripts
 pip install anthropic
 export ANTHROPIC_API_KEY=your_key_here
 
@@ -94,7 +94,7 @@ python generate.py --type wod --count 7 --category lower-body
 python generate.py --type wod --count 7 --category strength
 python generate.py --type wod --count 7 --category cardio
 
-# Output lands in woodie/output/
+# Output lands in woddy/output/
 ```
 
 ---

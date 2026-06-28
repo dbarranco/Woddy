@@ -1,6 +1,6 @@
 {
-  "name": "WODie - CrossFit Programming",
-  "short_name": "WODie",
+  "name": "Woddy - CrossFit Programming",
+  "short_name": "Woddy",
   "description": "Science-backed CrossFit programs and daily WODs with built-in timer",
   "start_url": "./",
   "scope": "./",

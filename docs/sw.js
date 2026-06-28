@@ -1,7 +1,7 @@
-// WODie Service Worker
+// Woddy Service Worker
 // Offline-first caching strategy for PWA
 
-const CACHE_NAME = 'wodie-v1';
+const CACHE_NAME = 'woddy-v1';
 const urlsToCache = [
   '/',
   '/index.html',

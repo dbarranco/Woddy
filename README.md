@@ -1,8 +1,8 @@
-# WODie 🏋️
+# Woddy 🏋️
 
 Your AI-powered CrossFit programming buddy—science-backed workouts, static PWA, zero runtime API calls.
 
-## What Is WODie?
+## What Is Woddy?
 
 Get personalized CrossFit programs and daily workouts built on real sports science. Every workout includes full session structure, equipment list, and scientific rationale with real citations.
 
