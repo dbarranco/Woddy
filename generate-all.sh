@@ -15,7 +15,7 @@ echo "=============================="
 echo ""
 
 # Programs
-echo "📋 PROGRAMS (3 variants)"
+echo "📋 PROGRAMS (2 variants)"
 echo ""
 python3 scripts/generate.py --type program --name back-in-shape --weeks 2
 echo "✅ 2-week program generated"
@@ -23,10 +23,6 @@ echo ""
 
 python3 scripts/generate.py --type program --name back-in-shape --weeks 3
 echo "✅ 3-week program generated"
-echo ""
-
-python3 scripts/generate.py --type program --name back-in-shape --weeks 4
-echo "✅ 4-week program generated"
 echo ""
 
 # WODs
