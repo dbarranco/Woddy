@@ -1106,6 +1106,7 @@ function renderWod(wod) {
   let html = `
     <div class="wod-header-controls">
       <button id="btn-change-category" class="btn-back-category">← Change Category</button>
+      <button id="btn-next-wod" class="btn-next-wod">🎲 Next WOD</button>
     </div>
 
     <div class="session-header">
@@ -1167,10 +1168,9 @@ function renderWod(wod) {
     html += `</div></div>`;
   }
 
-  // Next WOD and Start buttons
+  // Start button
   html += `
     <div class="session-actions">
-      <button id="btn-next-wod" class="btn-next-wod">🎲 Next WOD</button>
       <button id="btn-start-wod" class="btn-primary btn-large">Start Session</button>
     </div>
   `;

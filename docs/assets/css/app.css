@@ -1241,6 +1241,11 @@ h3 {
   letter-spacing: 1px;
   font-family: inherit;
   border-radius: 0;
+  white-space: nowrap;
+}
+
+/* Full width in session-actions, but not in header */
+.session-actions .btn-next-wod {
   width: 100%;
 }
 
