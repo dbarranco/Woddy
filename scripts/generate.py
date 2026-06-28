@@ -239,7 +239,7 @@ def call_claude(prompt: str, retries: int = 2) -> dict:
         print(f"→ Calling Claude API with prompt caching... (attempt {attempt}/{retries})")
         response = client.messages.create(
             model="claude-sonnet-4-5-20250929",  # Sonnet 4.5
-            max_tokens=16000,
+            max_tokens=20000,
             system=[
                 {
                     "type": "text",
