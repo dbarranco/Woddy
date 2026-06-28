@@ -865,6 +865,25 @@ function displayBlock(index) {
     perRound = baseDuration;
     totalDuration = baseDuration;
     roundInfo = `${baseDuration} minutes`;
+  } else if (key === 'strength' && block.movements && block.movements.length > 0) {
+    // For strength blocks, check for EMOM patterns in movement notes
+    // e.g., "E2MOM x 8 rounds (16 min total)"
+    let actualDuration = baseDuration;
+    const firstMovement = block.movements[0];
+    if (firstMovement.notes) {
+      const durationMatch = firstMovement.notes.match(/\((\d+)\s*min\s*total\)/i);
+      if (durationMatch) {
+        actualDuration = parseInt(durationMatch[1]);
+        totalDuration = actualDuration;
+        // Extract EMOM round info if available
+        const emomMatch = firstMovement.notes.match(/(E\dMOM|EMOM)\s*x\s*(\d+)\s*rounds/i);
+        if (emomMatch) {
+          numRounds = parseInt(emomMatch[2]);
+          perRound = actualDuration / numRounds;
+          roundInfo = `${emomMatch[1]} x ${numRounds} rounds (${actualDuration} min total)`;
+        }
+      }
+    }
   } else if (key === 'metcon' && block.rounds_or_duration) {
     roundInfo = block.rounds_or_duration;
     // For metcon, try to extract number of rounds if format is "X rounds"
