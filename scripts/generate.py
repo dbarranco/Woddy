@@ -233,25 +233,26 @@ Return this JSON structure, nothing else:
 
 # ── API call ───────────────────────────────────────────────────────────────────
 
-def call_claude(prompt: str, retries: int = 2) -> dict:
+def call_claude(prompt: str, retries: int = 2, model: str = None) -> dict:
     """Call Claude API (if key available) or CLI. Retries on JSON parse failure."""
 
     # Try to use API if ANTHROPIC_API_KEY is available
     if "ANTHROPIC_API_KEY" in os.environ:
-        return call_claude_api(prompt, retries)
+        return call_claude_api(prompt, retries, model)
     else:
         print("⚠️  ANTHROPIC_API_KEY not set. Using claude CLI (if available).")
-        return call_claude_cli(prompt, retries)
+        return call_claude_cli(prompt, retries, model)
 
 
-def call_claude_api(prompt: str, retries: int = 2) -> dict:
+def call_claude_api(prompt: str, retries: int = 2, model: str = None) -> dict:
     """Call Anthropic API and parse JSON response."""
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+    model_id = model or "claude-sonnet-4-5-20250929"  # Default to Sonnet 4.5
 
     for attempt in range(1, retries + 1):
-        print(f"→ Calling Claude API... (attempt {attempt}/{retries})")
+        print(f"→ Calling Claude API ({model_id})... (attempt {attempt}/{retries})")
         response = client.messages.create(
-            model="claude-sonnet-4-5-20250929",  # Sonnet 4.5
+            model=model_id,
             max_tokens=20000,
             system=[
                 {
@@ -294,11 +295,11 @@ def call_claude_api(prompt: str, retries: int = 2) -> dict:
                 raise
 
 
-def call_claude_cli(prompt: str, retries: int = 2) -> dict:
+def call_claude_cli(prompt: str, retries: int = 2, model: str = None) -> dict:
     """Call Claude CLI and parse JSON response. Only used if API key unavailable."""
 
     for attempt in range(1, retries + 1):
-        print(f"→ Calling Claude CLI... (attempt {attempt}/{retries})")
+        print(f"→ Calling Claude CLI (--model {model or 'default'})... (attempt {attempt}/{retries})")
 
         # Build the full prompt with system instructions
         full_prompt = f"""{SYSTEM_PROMPT}
@@ -309,13 +310,18 @@ KNOWLEDGE BASE AND HARD RULES BELOW:
 Important: Return ONLY the JSON, no additional text or summary."""
 
         try:
-            # Call claude CLI
+            # Call claude CLI with --print for non-interactive output
+            cmd = ["claude", "--print"]
+            if model:
+                cmd.extend(["--model", model])
+            cmd.append("-")
+
             result = subprocess.run(
-                ["claude", "-"],
+                cmd,
                 input=full_prompt,
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=600  # 10 minutes for CLI (higher token context = slower)
             )
 
             if result.returncode != 0:
@@ -506,7 +512,9 @@ def render_session_markdown(session: dict) -> str:
             scale = f"\n  > **Scale:** {m['scaling']}" if m.get("scaling") else ""
             # Strength movements can have either 'reps' or 'reps_or_duration'
             reps_info = m.get('reps', m.get('reps_or_duration', ''))
-            lines.append(f"- **{m['name']}** — {m['sets']}×{reps_info}{load}{rest}{note}{scale}")
+            # Handle both program strength (with 'sets') and other movement types
+            sets_info = f"{m['sets']}×" if m.get('sets') else ""
+            lines.append(f"- **{m['name']}** — {sets_info}{reps_info}{load}{rest}{note}{scale}")
         lines.append("")
 
     # Metcon
@@ -574,6 +582,8 @@ def main():
     parser.add_argument("--count", type=int, default=7, help="Number of WODs to generate")
     parser.add_argument("--category", type=str, default="full-body",
                         choices=["upper-body", "lower-body", "full-body", "cardio", "strength"])
+    parser.add_argument("--model", type=str, default=None,
+                        help="Claude model to use (e.g., 'opus' or full model ID). For API: uses full model ID. For CLI: passes to --model flag.")
     args = parser.parse_args()
 
     print("Loading knowledge base...")
@@ -586,7 +596,7 @@ def main():
     if args.type == "program":
         print(f"\nGenerating {args.weeks}-week program: {args.name}")
         prompt = build_program_prompt(args.name, args.weeks, kb, movements, rules)
-        data = call_claude(prompt)
+        data = call_claude(prompt, model=args.model)
 
         print("Validating structure...")
         schema_violations = validate_schema_structure(data, "program")
@@ -618,7 +628,7 @@ def main():
     elif args.type == "wod":
         print(f"\nGenerating {args.count} WODs — category: {args.category}")
         prompt = build_wod_prompt(args.count, args.category, kb, movements, rules)
-        data = call_claude(prompt)
+        data = call_claude(prompt, model=args.model)
 
         print("Validating structure...")
         schema_violations = validate_schema_structure(data, "wod")
