@@ -104,20 +104,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 //=== Onboarding ===
 function setupOnboarding() {
-  document.getElementById('btn-start-program').addEventListener('click', () => {
-    document.getElementById('view-onboarding').classList.add('hidden');
-    document.getElementById('app-header').classList.remove('hidden');
-    showProgramsSelection();
-  });
+  const btnStartProgram = document.getElementById('btn-start-program');
+  if (btnStartProgram) {
+    btnStartProgram.addEventListener('click', () => {
+      document.getElementById('view-onboarding').classList.add('hidden');
+      document.getElementById('app-header').classList.remove('hidden');
+      showProgramsSelection();
+    });
+  }
 
-  document.getElementById('btn-random-wod-start').addEventListener('click', () => {
-    document.getElementById('view-onboarding').classList.add('hidden');
-    document.getElementById('app-header').classList.remove('hidden');
-    document.getElementById('view-wod').classList.remove('hidden');
-    // Reset WOD view to show category selector
-    document.getElementById('wod-category-selector').classList.remove('hidden');
-    document.getElementById('wod-display').classList.add('hidden');
-  });
+  const btnRandomWod = document.getElementById('btn-random-wod-start');
+  if (btnRandomWod) {
+    btnRandomWod.addEventListener('click', () => {
+      document.getElementById('view-onboarding').classList.add('hidden');
+      document.getElementById('app-header').classList.remove('hidden');
+      document.getElementById('view-wod').classList.remove('hidden');
+      // Reset WOD view to show category selector
+      document.getElementById('wod-category-selector').classList.remove('hidden');
+      document.getElementById('wod-display').classList.add('hidden');
+    });
+  }
 }
 
 //=== Program Flow ===
@@ -602,13 +608,27 @@ function setupCollapsibles() {
 
 //=== Session Start ===
 function setupSessionStart() {
-  document.getElementById('btn-start-session').addEventListener('click', startSession);
-  document.getElementById('btn-stop').addEventListener('click', stopSession);
-  document.getElementById('btn-play').addEventListener('click', playTimer);
-  document.getElementById('btn-pause').addEventListener('click', pauseTimer);
-  document.getElementById('btn-reset').addEventListener('click', resetTimer);
-  document.getElementById('btn-prev-block').addEventListener('click', previousBlock);
-  document.getElementById('btn-next-block').addEventListener('click', nextBlock);
+  // Only attach listeners if buttons exist
+  const btnStartSession = document.getElementById('btn-start-session');
+  if (btnStartSession) btnStartSession.addEventListener('click', startSession);
+
+  const btnStop = document.getElementById('btn-stop');
+  if (btnStop) btnStop.addEventListener('click', stopSession);
+
+  const btnPlay = document.getElementById('btn-play');
+  if (btnPlay) btnPlay.addEventListener('click', playTimer);
+
+  const btnPause = document.getElementById('btn-pause');
+  if (btnPause) btnPause.addEventListener('click', pauseTimer);
+
+  const btnReset = document.getElementById('btn-reset');
+  if (btnReset) btnReset.addEventListener('click', resetTimer);
+
+  const btnPrevBlock = document.getElementById('btn-prev-block');
+  if (btnPrevBlock) btnPrevBlock.addEventListener('click', previousBlock);
+
+  const btnNextBlock = document.getElementById('btn-next-block');
+  if (btnNextBlock) btnNextBlock.addEventListener('click', nextBlock);
 }
 
 
