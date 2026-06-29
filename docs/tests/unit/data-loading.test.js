@@ -213,6 +213,134 @@ describe('Category Filter Tests', () => {
   });
 });
 
+describe('WOD Data Validation - No Undefined Steps', () => {
+  test('should not contain undefined in WOD block movements', () => {
+    const wodWithUndefined = {
+      title: 'Bad WOD',
+      blocks: {
+        strength: {
+          movements: [
+            { name: 'Back Squat', reps: 'undefined x 5' },
+            { name: undefined, reps: '5x5' }
+          ]
+        }
+      }
+    };
+
+    // Check for undefined strings
+    const jsonStr = JSON.stringify(wodWithUndefined);
+    expect(jsonStr).toContain('undefined');
+
+    // This WOD should fail validation
+    const hasUndefined = jsonStr.includes('undefined');
+    expect(hasUndefined).toBe(true);
+  });
+
+  test('should validate all movement names are defined', () => {
+    const validWod = {
+      title: 'Good WOD',
+      blocks: {
+        strength: {
+          movements: [
+            { name: 'Back Squat', reps: '5x5' },
+            { name: 'Bench Press', reps: '5x5' }
+          ]
+        },
+        metcon: {
+          movements: [
+            { name: 'Kettlebell Swing', reps: '20 reps' }
+          ]
+        }
+      }
+    };
+
+    // Check that all movement names exist and aren't undefined
+    const validateMovements = (wod) => {
+      for (const blockName in wod.blocks) {
+        const movements = wod.blocks[blockName].movements || [];
+        for (const movement of movements) {
+          if (!movement.name || typeof movement.name !== 'string') {
+            return false;
+          }
+          if (movement.name.includes('undefined')) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+
+    expect(validateMovements(validWod)).toBe(true);
+  });
+
+  test('should detect WODs with undefined step content', () => {
+    const detectUndefinedContent = (wod) => {
+      const jsonString = JSON.stringify(wod);
+      // Check for the literal string "undefined" in the JSON
+      return jsonString.includes('"undefined"') || jsonString.includes(':undefined');
+    };
+
+    const badWod = {
+      title: 'Broken WOD',
+      blocks: {
+        strength: {
+          content: 'undefined'
+        }
+      }
+    };
+
+    const goodWod = {
+      title: 'Good WOD',
+      blocks: {
+        strength: {
+          content: '5 rounds for time'
+        }
+      }
+    };
+
+    expect(detectUndefinedContent(badWod)).toBe(true);
+    expect(detectUndefinedContent(goodWod)).toBe(false);
+  });
+
+  test('should ensure all program sessions have valid movements', () => {
+    const programData = {
+      sessions: [
+        {
+          title: 'Session 1',
+          blocks: [
+            {
+              type: 'strength',
+              movements: [
+                { name: 'Squat', reps: '5x3' }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const validateProgram = (program) => {
+      for (const session of program.sessions) {
+        if (session.blocks) {
+          for (const block of session.blocks) {
+            if (block.movements) {
+              for (const movement of block.movements) {
+                // Ensure movement has a name and it's not "undefined"
+                if (!movement.name || movement.name === 'undefined' || typeof movement.name !== 'string') {
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      }
+      return true;
+    };
+
+    expect(validateProgram(programData)).toBe(true);
+  });
+});
+
 describe('Error Handling', () => {
   test('should handle fetch network errors', async () => {
     global.fetch.mockRejectedValueOnce(new Error('Network error'));

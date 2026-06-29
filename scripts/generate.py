@@ -374,6 +374,12 @@ def validate_schema_structure(data: dict, content_type: str) -> list[str]:
     """Validate that the generated JSON matches the expected structure. Returns list of violations."""
     violations = []
 
+    # Check for undefined values in the JSON structure
+    json_str = json.dumps(data)
+    if '"undefined"' in json_str or ':undefined' in json_str or 'undefined,' in json_str:
+        violations.append("Generated content contains literal 'undefined' values - this indicates missing movement names or block content")
+        return violations
+
     if content_type == "program":
         # Check top-level structure
         if "program" not in data:
