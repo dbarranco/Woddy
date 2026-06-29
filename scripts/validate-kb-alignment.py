@@ -62,8 +62,30 @@ class KBValidator:
             },
         }
 
-        # Flowchart 2: Loading → Progression Scheme (placeholder for future)
-        self.loading_rules = {}
+        # Flowchart 2: Loading → Progression Scheme
+        # Week-based loading intensity and rep scheme rules
+        self.loading_rules = {
+            1: {
+                "intensity_min": 70,
+                "intensity_max": 75,
+                "rep_schemes": ["5x5", "4x5"],
+            },
+            2: {
+                "intensity_min": 75,
+                "intensity_max": 80,
+                "rep_schemes": ["4x4", "4x3"],
+            },
+            3: {
+                "intensity_min": 80,
+                "intensity_max": 85,
+                "rep_schemes": ["4x3", "5x2"],
+            },
+            4: {
+                "intensity_min": 60,
+                "intensity_max": 65,
+                "rep_schemes": ["3x5", "3x3"],
+            },
+        }
 
     def _extract_energy_system_from_rationale(
         self, rationale: Dict
@@ -170,6 +192,137 @@ class KBValidator:
 
         return (passed, checks)
 
+    def _extract_intensity_percentage(self, load_string: str) -> Optional[float]:
+        """Extract percentage from load string like '75% 1RM' or 'RPE 7'.
+
+        Returns: float (0-100) for percentage, or None if unparseable
+        """
+        if not load_string:
+            return None
+
+        load_lower = load_string.lower()
+
+        # Handle "X% 1RM" format
+        if "%" in load_string:
+            try:
+                return float(load_string.split("%")[0].strip())
+            except (ValueError, IndexError):
+                return None
+
+        # RPE and RIR handled separately — skip for now (outside KB scope)
+        return None
+
+    def _extract_rep_scheme(self, movement: Dict) -> Optional[str]:
+        """Extract rep scheme from movement.
+
+        Looks for 'sets x reps' pattern in 'sets' and 'reps' fields.
+        Returns: 'SxR' format (e.g., '5x5', '4x3') or None
+        """
+        sets = movement.get("sets")
+        reps = movement.get("reps")
+
+        if sets is None or reps is None:
+            return None
+
+        # Handle reps as string or int
+        reps_str = str(reps).strip()
+
+        # Simple case: single rep count
+        if reps_str.isdigit():
+            return f"{sets}x{reps_str}"
+
+        # Range case: '3-5' — use minimum for scheme matching
+        if "-" in reps_str:
+            min_rep = reps_str.split("-")[0].strip()
+            if min_rep.isdigit():
+                return f"{sets}x{min_rep}"
+
+        return None
+
+    def _check_loading_intensity_alignment(
+        self, session: Dict, week: int
+    ) -> Tuple[bool, List[Tuple[str, bool, str]]]:
+        """Validate Flowchart 2: Program week → loading intensity.
+
+        Returns: (passed: bool, checks: List[(check_name, passed, reason)])
+        """
+        checks = []
+        passed = True
+
+        # Get strength block
+        strength = session.get("blocks", {}).get("strength", {})
+        if not strength:
+            checks.append(("strength_block_exists", False, "No strength block found"))
+            return (passed, checks)
+
+        movements = strength.get("movements", [])
+        if not movements:
+            checks.append(
+                ("strength_movements_exist", False, "No movements in strength block")
+            )
+            return (passed, checks)
+
+        # Get week-specific loading rules
+        week_rules = self.loading_rules.get(week)
+        if not week_rules:
+            checks.append(("week_valid", False, f"Week {week} not in loading rules"))
+            passed = False
+            return (passed, checks)
+
+        intensity_min = week_rules["intensity_min"]
+        intensity_max = week_rules["intensity_max"]
+        allowed_schemes = week_rules["rep_schemes"]
+
+        # Check first movement's intensity (proxy for session intensity)
+        first_move = movements[0]
+        intensity = self._extract_intensity_percentage(first_move.get("load", ""))
+
+        if intensity is not None:
+            intensity_ok = intensity_min <= intensity <= intensity_max
+            checks.append(
+                (
+                    f"intensity_week_{week}",
+                    intensity_ok,
+                    f"Intensity {intensity}% {'is' if intensity_ok else 'is not'} in range {intensity_min}-{intensity_max}% for week {week}",
+                )
+            )
+            if not intensity_ok:
+                passed = False
+        else:
+            checks.append(
+                (
+                    f"intensity_week_{week}",
+                    False,
+                    f"Could not extract intensity percentage from load string '{first_move.get('load', '')}'",
+                )
+            )
+            passed = False
+
+        # Check rep scheme
+        rep_scheme = self._extract_rep_scheme(first_move)
+        if rep_scheme:
+            scheme_ok = rep_scheme in allowed_schemes
+            checks.append(
+                (
+                    f"rep_scheme_week_{week}",
+                    scheme_ok,
+                    f"Rep scheme {rep_scheme} {'is' if scheme_ok else 'is not'} in allowed list {allowed_schemes} for week {week}",
+                )
+            )
+            if not scheme_ok:
+                passed = False
+        else:
+            checks.append(
+                (
+                    f"rep_scheme_week_{week}",
+                    False,
+                    "Could not extract rep scheme from sets/reps fields",
+                )
+            )
+            # Don't fail on this if it's optional
+
+        return (passed, checks)
+
     def validate_wod(self, wod: Dict) -> ValidationResult:
         """Validate a single WOD against KB rules."""
         passed = True
@@ -184,11 +337,44 @@ class KBValidator:
         return ValidationResult(passed=passed, wod_id=wod.get("id", "unknown"), checks=checks)
 
     def validate_program(self, program: Dict) -> ValidationResult:
-        """Validate a program (placeholder for future flowcharts)."""
-        # TODO: Implement flowchart validations for programs
-        return ValidationResult(
-            passed=True, wod_id=program.get("id", "unknown"), checks=[]
-        )
+        """Validate a program against KB decision flowcharts."""
+        passed = True
+        checks = []
+
+        # Extract sessions from program structure
+        program_data = program.get("program", {})
+        program_id = program_data.get("id", program.get("id", "unknown"))
+        sessions = program_data.get("sessions", [])
+
+        if not sessions:
+            checks.append(("sessions_exist", False, "No sessions found in program"))
+            return ValidationResult(passed=False, wod_id=program_id, checks=checks)
+
+        # Validate each session
+        for session in sessions:
+            session_id = session.get("id", "unknown")
+            week = session.get("week")
+
+            if week is None:
+                checks.append(
+                    (f"session_{session_id}_week_defined", False, "Session has no week number")
+                )
+                passed = False
+                continue
+
+            # Flowchart 2: Loading intensity alignment
+            fc2_passed, fc2_checks = self._check_loading_intensity_alignment(
+                session, week
+            )
+            if not fc2_passed:
+                passed = False
+
+            # Format checks with session context
+            for check_name, check_passed, reason in fc2_checks:
+                qualified_name = f"session_{session_id}_{check_name}"
+                checks.append((qualified_name, check_passed, reason))
+
+        return ValidationResult(passed=passed, wod_id=program_id, checks=checks)
 
 
 def main():
