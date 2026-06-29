@@ -60,6 +60,27 @@ CRITICAL CONSTRAINTS — you must follow all of these:
 10. CRITICAL: All objects and arrays must have matching braces and brackets. Your JSON must be 100% syntactically valid.
 11. If generating multiple items (like WODs), ensure the outer JSON structure is an object with a single top-level key ("program", "wods", etc).
 
+KB FLOWCHART ALIGNMENT (from Knowledge Base Decision Flowcharts):
+- FLOWCHART 1 (Energy System → Metcon Format): ALWAYS state the energy system target in session_why rationale. Match format to energy system:
+  * Phosphocreatine (0-10s): Use EMOM/E2MOM/E3MOM format, time cap 8-12 min
+  * Glycolytic (10s-2m): Use AMRAP/For Time/RFT format, time cap 7-15 min
+  * Oxidative (>2m): Use AMRAP format, time cap 15-20 min
+- FLOWCHART 2 (Week → Loading Intensity): Match intensity % and rep scheme to program week:
+  * Week 1: 70-75% 1RM, rep schemes 5x5 or 4x5
+  * Week 2: 75-80% 1RM, rep schemes 4x4 or 4x3
+  * Week 3: 80-85% 1RM, rep schemes 4x3 or 5x2
+  * Week 4: 60-65% 1RM (deload), rep schemes 3x5 or 3x3
+- FLOWCHART 3 (Weekly Sequencing): Plan weekly sequence to minimize interference:
+  * No Olympic lifting on consecutive days
+  * No heavy lower body (>75% 1RM) on consecutive days
+  * No high-CNS sessions back-to-back
+  * Minimum 1 aerobic session per week
+
+RATIONALE REQUIREMENTS:
+- session_why: ALWAYS explicitly state which energy system you're training (phosphocreatine, glycolytic, or oxidative)
+- movement_why: Explain the movement selection and how it supports the session goal
+- loading_why: ALWAYS reference the specific week's loading progression and cite the appropriate KB source
+
 You are assembling from a foundation of verified knowledge. You are not inventing."""
 
 
@@ -196,6 +217,15 @@ REQUIREMENTS:
 - Each WOD must have a rationale block with real citations
 - Vary metcon formats across the set (mix AMRAP, EMOM, For Time)
 - Category filter: "{category}" — all WODs should fit this category
+
+CRITICAL RATIONALE REQUIREMENTS:
+- session_why MUST explicitly name the energy system being targeted:
+  * Write "phosphocreatine" or "ATP-PC system" for short, max-effort work
+  * Write "glycolytic system" or "anaerobic glycolysis" for high-intensity 30s-2min work
+  * Write "oxidative system" or "aerobic base" for sustained long-duration work
+  * This is checked by validation: energy system MUST be mentioned in session_why.text
+- loading_why MUST describe why the intensity % and rep scheme are chosen (even for WODs without strength blocks)
+- movement_why MUST explain how movements support the energy system being trained
 
 Return this JSON structure, nothing else:
 {{
